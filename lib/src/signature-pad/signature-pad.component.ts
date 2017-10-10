@@ -1,6 +1,7 @@
 import { Component,Output, Input, EventEmitter, OnInit,ElementRef } from '@angular/core';
-import * as SignaturePad from 'signature_pad';
 import { SignaturePadService } from './signature-pad.service';
+
+declare var require: any;
 
 @Component({
   selector: 'signature-pad,[SignaturePad]',
@@ -56,7 +57,6 @@ import { SignaturePadService } from './signature-pad.service';
 
 .m-signature-pad--body {
   padding: 20px;
-  // border: 1px solid #f4f4f4;
 }
 
 .m-signature-pad--body
@@ -96,50 +96,6 @@ import { SignaturePadService } from './signature-pad.service';
   .button.save {
     right: 0;
   }
-
-// @media screen and (max-width: 1024px) {
-//   .m-signature-pad {
-//     // top: 0;
-//     // left: 0;
-//     // right: 0;
-//     // bottom: 0;
-//     // width: auto;
-//     // height: auto;
-//     // min-width: 250px;
-//     // min-height: 140px;
-//     // margin: 5%;
-//   }
-//   #github {
-//     display: none;
-//   }
-// }
-
-// @media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-//   .m-signature-pad {
-//     margin: 10%;
-//   }
-// }
-
-// @media screen and (max-height: 320px) {
-//   .m-signature-pad--body {
-//     left: 0;
-//     right: 0;
-//     top: 0;
-//     bottom: 32px;
-//   }
-//   .m-signature-pad--footer {
-//     left: 20px;
-//     right: 20px;
-//     bottom: 4px;
-//     height: 28px;
-//   }
-//   .m-signature-pad--footer
-//     .description {
-//       font-size: 1em;
-//       margin-top: 1em;
-//     }
-// }
-
   `]
 })
 export class SignaturePadComponent implements OnInit {
@@ -197,6 +153,8 @@ export class SignaturePadComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    let SignaturePad = require('signature_pad')['default'];
+
     this._canvas = this._el.nativeElement.querySelector("canvas");
     this._signaturePad = new SignaturePad(this._canvas);
   }
