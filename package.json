@@ -12,7 +12,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "lib.build": "ngm build -p lib/src --clean",
+    "lib.build": "ngm build -p lib/src --clean && pushd lib/dist && npm pack | xargs -I{} mv {} ../../../ && echo 'OK'",
     "lib.build.watch": "ngm build -p lib/src --watch --skip-bundles",
     "demo.serve": "run-p lib.build.watch link start",
     "demo.gh-pages": "run-s lib.build demo.gh-pages.build demo.deploy",
