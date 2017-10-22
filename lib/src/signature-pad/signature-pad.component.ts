@@ -13,7 +13,7 @@ declare var require: any;
     <div class="m-signature-pad--footer" [hidden]="_hideFooter">
       <div class="description">{{_label}}</div>
       <button type="button" class="button clear" data-action="clear" (click)="onClearClick()">Clear</button>
-      <button type="button" class="button save" data-action="save" (click)="onSaveClick()">Save</button>
+      <!-- <button type="button" class="button save" data-action="save" (click)="onSaveClick()">Save</button> -->
     </div>
   </div>
  `,
