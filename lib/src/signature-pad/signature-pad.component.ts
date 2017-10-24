@@ -6,63 +6,32 @@ declare var require: any;
 @Component({
   selector: 'signature-pad,[SignaturePad]',
   template: `
-    <div id="signature-pad" class="m-signature-pad" [style.width.px]="_width" [style.height.px]="_height">
-    <div class="m-signature-pad--body" [style.width.px]="_width-40" [style.height.px]="_height-40">
-       <canvas [width]="_width-40" [height]="_height-40" style="touch-action: none;"></canvas>
+    <div id="signature-pad" class="m-signature-pad">
+      <div class="m-signature-pad--body">
+        <canvas style="touch-action: none;"></canvas>
+      </div>
+      <div class="m-signature-pad--footer" [hidden]="_hideFooter">
+        <div class="description">{{_label}}</div>
+        <button type="button" class="button clear" data-action="clear" (click)="onClearClick()">Clear</button>
+        <!-- <button type="button" class="button save" data-action="save" (click)="onSaveClick()">Save</button> -->
+      </div>
     </div>
-    <div class="m-signature-pad--footer" [hidden]="_hideFooter">
-      <div class="description">{{_label}}</div>
-      <button type="button" class="button clear" data-action="clear" (click)="onClearClick()">Clear</button>
-      <!-- <button type="button" class="button save" data-action="save" (click)="onSaveClick()">Save</button> -->
-    </div>
-  </div>
  `,
   styles: [`
 .m-signature-pad {
   position: relative;
   font-size: 10px;
-  border: 1px solid #e8e8e8;
   background-color: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.08) inset;
-  border-radius: 4px;
-}
-
-.m-signature-pad:before, 
-.m-signature-pad:after {
-	position: absolute;
-  z-index: -1;
-  content: "";
-	width: 40%;
-	height: 10px;
-	left: 20px;
-	bottom: 10px;
-	background: transparent;
-	-webkit-transform: skew(-3deg) rotate(-3deg);
-	-moz-transform: skew(-3deg) rotate(-3deg);
-	-ms-transform: skew(-3deg) rotate(-3deg);
-	-o-transform: skew(-3deg) rotate(-3deg);
-	transform: skew(-3deg) rotate(-3deg);
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
-}
-
-.m-signature-pad:after {
-	left: auto;
-	right: 20px;
-	-webkit-transform: skew(3deg) rotate(3deg);
-	-moz-transform: skew(3deg) rotate(3deg);
-	-ms-transform: skew(3deg) rotate(3deg);
-	-o-transform: skew(3deg) rotate(3deg);
-	transform: skew(3deg) rotate(3deg);
+  width: 100%;
 }
 
 .m-signature-pad--body {
   padding: 20px;
+  height: 300px;
 }
 
 .m-signature-pad--body
   canvas {
-    border-radius: 4px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.02) inset;
   }
 
 .m-signature-pad--footer {
@@ -152,11 +121,29 @@ export class SignaturePadComponent implements OnInit {
     this._label = value;
   }
 
+  get toDataUrl() {
+    return this._signaturePad.toDataURL();
+  }
+
+  resizeCanvas() {
+    console.log(window);
+    const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+    const parentDiv = this._el.nativeElement.querySelector('#signature-pad > div.m-signature-pad--body')
+
+    this._canvas.width = (parentDiv.offsetWidth * ratio) - 40;
+    this._canvas.height = (parentDiv.offsetHeight * ratio) - 40;
+    this._canvas.getContext('2d').scale(ratio, ratio);
+
+    this._signaturePad.clear();
+  }
+
   ngAfterViewInit() {
     let SignaturePad = require('signature_pad')['default'];
 
-    this._canvas = this._el.nativeElement.querySelector("canvas");
+    this._canvas = this._el.nativeElement.querySelector('canvas');
     this._signaturePad = new SignaturePad(this._canvas);
+    this.resizeCanvas();
+    window.onresize = this.resizeCanvas.bind(this);
   }
 
   onClearClick() {
